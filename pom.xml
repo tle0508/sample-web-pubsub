@@ -2,10 +2,10 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>th.ac.mfu</groupId>
-	<artifactId>lab-microservice</artifactId>
+	<artifactId>lab-pubsub</artifactId>
 	<version>1.0</version>
 	<packaging>pom</packaging>
-	<name>lab-end2end</name>
+	<name>lab-pubsub</name>
 
 	<properties>
 		<slf.version>1.7.25</slf.version>
@@ -18,9 +18,9 @@
 	</properties>
 	
 	<modules>
-		<module>lab-microservice-currency-conversion</module>
-		<module>lab-microservice-forex-service</module>
-		<module>lab-microservice-eureka-naming-server</module>
+		<module>lab-pubsub-producer</module>
+		<module>lab-pubsub-consumer</module>
+		<module>lab-pubsub-eureka-naming-server</module>
 	</modules>
 	
 	<dependencies>
