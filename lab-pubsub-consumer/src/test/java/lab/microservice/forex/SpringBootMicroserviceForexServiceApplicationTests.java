@@ -8,6 +8,7 @@ class SpringBootMicroserviceForexServiceApplicationTests {
 
 	@Test
 	void contextLoads() {
+
 	}
 
 }

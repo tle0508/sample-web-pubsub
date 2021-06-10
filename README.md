@@ -126,7 +126,28 @@ When you start the generator, the random transactions should be created and sent
 ...
 ```
 
-#### c) Reflection
+
+#### c) Unit Testing Kafka
+The test `ProducerApplicationTests` helps to automatically check if the producer works properly. We have below line to disable the discovery client as we only want to test if the producer works well with the Kafka. 
+
+```
+@SpringBootTest(properties = {"eureka.client.enabled:false"})
+```
+
+This test uses mocked kafka so we need to specified `@EmbeddedKafka` annotation to setting up the kafka server at the specified port (9092).
+
+```
+@EmbeddedKafka(partitions = 1, brokerProperties = { "listeners=PLAINTEXT://localhost:9092", "port=9092" })
+```
+
+ After the generator is started, the mocked consumer `Consumer` is created using `configureConsumer()` method. The `KafkaTestUtils.getSingleRecord()` fetches the latest record published to Kafka with time out at 4000 milliseconds.
+
+The `Assertions.assertThat(singleRecord.value()).isNotEmpty();` checks if the messages published by the generator is not empty.
+
+Please try to run this test by running this test class or use maven's `verify` goal.
+
+
+#### d) Questions
 In TransactionProducerController, the  `start`, `interrupt` and `join` method are called. What are these methods for Java Thread class for?
 
 Please answer this question in your journal and here.
@@ -134,6 +155,7 @@ Please answer this question in your journal and here.
 ```
 Your thoughts here
 ```
+
 
 
 Exercise 2 - Consumer
@@ -167,6 +189,12 @@ Please  modify the source code so that the consumer only listens to `Withdraw` t
 Your modification
 ```
 
+#### Reflection
+How can pub-sub handle a large volume of transactions? 
+
+```
+Your though here
+```
 
 
  
