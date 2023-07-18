@@ -10,8 +10,7 @@
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>th.ac.mfu</groupId>
-	<artifactId>lab-pubsub-consumer</artifactId>
-	<name>lab-pubsub-consumer</name>
+	<artifactId>consumer</artifactId>
 	<version>0.0.1-SNAPSHOT</version>	
 	<description>Service to process transaction</description>
 	<properties>

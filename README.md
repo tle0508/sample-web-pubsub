@@ -1,31 +1,9 @@
-Lab - Pub-Sub
+Sample - Pub-Sub
 ==========
-
-Before you start
-----------
-The purpose of this lab is to explore the concept of publish-subscribe pattern using messaging system. We will use Apache Kafka as messagning system, which is suitable to process big data. 
-
-Begin by cloning your repository onto your local machine. Import it into eclipse. This project includes three projects `lab-pubsub-consumer`, `lab-pubsub-eureka-naming-server` and `lab-pubsub-producer`. Please import them as maven project in eclipse by Import > Maven project and choose pom file in these projects. 
-
-Banking System
-----------
-In this lab, you will develop a part of banking system. It have microservices that process the transactions of banking such as depositing and withdrawal from the mobile and web banking application. There are two services namely: `consumer` and `producer`. The `producer` randomly generate the transactions, which mimic the incoming transaction from mobile and web banking application. The `consumer` helps to process the transaction by simply printing them out (in the real world, the consumer would invoke the core banking to process the transaction). 
-
-We can no longer rely on service-to-service call like we have done in the microservice lab. As there could be millions of transaction per minute, we need to make sure that the consumer is robust and scalable enough to support such processing so we may have multiple consumers. When all consumer is down, the producer should still be working. We apply Apache Kafka to achieve this scalable pub-sub processing as shown in the figure below.
-
-![](overview.png)
-
-
-Apache kafka's architecture can be seen below. The producers create messages to send, while the consumers receive the message to process. These messages is used to communicated between software component so they can be data to process, or events triggered by some components in the software system to let the other components to make further processing.  The kafka cluster consists of kafka brokers (server) that store messages. Zookeeper keeps track of broker joining or leaving the cluster. Zookeeper also helps to make sure that topics are synchonised across all brokers in the cluster.
 
 ![](kafka_architecture.jpg)
 
-Exercise 1 - Producer
-----------
-First, we need to set up Apacha kafka. 
 
-#### a) Setting up
-This step involve settingup Zookeeper and Apache Kafka on your machine. In this exercise, we will setup 1 zookeeper and 1 instance of Kafka broker
 
 #####Setup Zookeeper
 - Download the ZooKeeper 3.7.0 from [here](https://www.apache.org/dyn/closer.lua/zookeeper/zookeeper-3.7.0/apache-zookeeper-3.7.0-bin.tar.gz).    
@@ -54,146 +32,21 @@ This step involve settingup Zookeeper and Apache Kafka on your machine. In this 
 
 - Check the `zookeeper.connect` property and change it as per your needs. The Kafka broker will connect to this ZooKeeper instance.
 
-- Go to the Kafka home directory and execute the command `.\bin\windows\kafka-server-start.bat` .\config\server.properties (on windows) `./bin/kafka-server-start.sh config/server.properties` (on macos).
+- Go to the Kafka home directory and execute the command `.\bin\windows\kafka-server-start.bat .\config\server.properties` (on windows) or `./bin/kafka-server-start.sh config/server.properties` (on macos).
 
-
-We will need to create a topic on kafka to store messages for bank transactions. Please execute the following command to create a topic named `banktrans`.
+d
+We will need to create a topic on kafka to store messages for bank transactions. Please execute the following command to create a topic named `sample`.
 
 ```
-./kafka-topics.bat --create --topic banktrans --bootstrap-server localhost:9092
+./kafka-topics.bat --create --topic sample --bootstrap-server localhost:9092
 ```
 
 
 You can monitor the Kafka server to see if there is any incoming messages under this topic using the following command.
 
 ```
-./kafka-console-consumer.bat --topic banktrans --from-beginning --bootstrap-server localhost:9092
-```
-
-#### b) Developing Producer
-We will develop a producer that randomly generate a bank transaction every 3 seconds. This producer resided in `lab-pubsub-producer` is developed using Spring Boot and dependency to Kafka's library. Please make sure the following dependencies included in `pom.xml`
-
-```
-		<dependency>
-			<groupId>org.springframework.kafka</groupId>
-			<artifactId>spring-kafka</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.kafka</groupId>
-			<artifactId>spring-kafka-test</artifactId>
-			<scope>test</scope>
-		</dependency>
-```
-
- There are the following classes:
-
-- `TransactionProducerApplication` is simply a spring boot application
-
-- `Transaction` is a class that represents the bank transaction. It consists of transaction type: `Withdraw` and `Deposit` as well as the amount of money. 
-
-- `TransactionConfig` contains the configuration that are required to connec to kafka server, please add the lines below in `producerFactory()`. The first line specifis where the kafka server is running. The second line specifies how to serialise key to store on the Kafka server. The third line specifies that the value (object of `Transaction`) should be serialised in JSON to store on Kafka.   
-
-```
-config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "127.0.0.1:9092");
-config.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-config.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
-```
-
-- `TransactionProducerController` is a rest controller consisting of two methods, `start()` for starting the generator (`TransactionGenerator`) that randomly generates the transactions and `stop()` for stopping it. Then, we need to automatically wire the kafka configuration by adding the following line to the class. The KafkaTemplate will be initialised with Kafka's configuration as string and model class object.
-
-```
-@Autowired
-private KafkaTemplate<String, Transaction> kafkaTemplate;
+./kafka-console-consumer.bat --topic sample --from-beginning --bootstrap-server localhost:9092
 ```
 
 
-- `TransactionGenerator` implements a runnable class that generates the transaction randomly and push the message to the kafka server. Please add the  line below after we randomly generate the transaction. This statement sends `transation` under `banktrans` topic. This kafkaTemplate is automatically wired in `TransactionController`, you need to find a way to pass that to this class.
-
-```
-kafkaTemplate.send("banktrans", transaction);
-```
-
-Now you can start this application (pleases make sure you start Eureka naming server before) and invoke GET request to `http://localhost:8100/producer/start` to start the generator and `http://localhost:8100/producer/stop` to stop the generator. 
-
-When you start the generator, the random transactions should be created and sent to the kafka server. The consumer console (`kafka-console-consumer.sh` that you started in setting up step) should list those transactions as sample shown below.
-
-```
-{"type":"Withdraw","amount":21954}
-{"type":"Deposit","amount":99120}
-{"type":"Deposit","amount":65775}
-{"type":"Withdraw","amount":96887}
-...
-```
-
-
-#### c) Unit Testing Kafka
-The test `ProducerApplicationTests` helps to automatically check if the producer works properly. We have below line to disable the discovery client as we only want to test if the producer works well with the Kafka. 
-
-```
-@SpringBootTest(properties = {"eureka.client.enabled:false"})
-```
-
-This test uses mocked kafka so we need to specified `@EmbeddedKafka` annotation to setting up the kafka server at the specified port (9092).
-
-```
-@EmbeddedKafka(partitions = 1, brokerProperties = { "listeners=PLAINTEXT://localhost:9092", "port=9092" })
-```
-
- After the generator is started, the mocked consumer `Consumer` is created using `configureConsumer()` method. The `KafkaTestUtils.getSingleRecord()` fetches the latest record published to Kafka with time out at 4000 milliseconds.
-
-The `Assertions.assertThat(singleRecord.value()).isNotEmpty();` checks if the messages published by the generator is not empty.
-
-Please try to run this test by running this test class or use maven's `verify` goal.
-
-
-#### d) Questions
-In TransactionProducerController, the  `start`, `interrupt` and `join` method are called. What are these methods for Java Thread class for?
-
-Please answer this question in your journal and here.
-
-```
-Your thoughts here
-```
-
-
-
-Exercise 2 - Consumer
-----------
-You can find the consumer in `lab-pubsub-consumer`. This is a simple Spring boot application. It consists of three classes as follows:
-
-- `TransactionConfig` contains the configuration to connect to the Kafka server and how to deserialise the message.
-- `TransactionConsumer` is a Spring component that listen to topic `banktrans` and print out the message as a log. You must add the following method to listen to the topic.
-
-```
-@KafkaListener(topics = "banktrans")
-	void listener(String transaction) {
-		LOG.info(transaction);
-	}
-```
-
-You can run the consumer from `TransactionConsumerApplication`. The consumer will wait for the incoming messages sent by the producer and print out the messages as sample below.
-
-```
-{"type":"Withdraw","amount":93034}
-{"type":"Deposit","amount":42685}
-{"type":"Deposit","amount":2874}
-```
-
-To make the consumer more reliable, we add more instances of consumer by running `TransactionConsumerApplication` on different port (add vm argument `-Dserver.port=8001`). The messages should print out from the console of all instances of consumer. 
-
-Please  modify the source code so that the consumer only listens to `Withdraw` transaction and explain your modification below. 
-*Hint: Please see this [link](https://www.baeldung.com/spring-kafka) for how to implment the message filters.*
-
-```
-Your modification
-```
-
-#### Reflection
-How can pub-sub handle a large volume of transactions? 
-
-```
-Your though here
-```
-
-
- 
+Goto: http://localhost:8100/message/[some message] and try to send some message. After that, monitor if the consumer can receive the message.

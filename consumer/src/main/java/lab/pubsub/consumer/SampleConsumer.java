@@ -6,11 +6,11 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
 @Component
-public class TransactionConsumer {
-	Logger LOG = LoggerFactory.getLogger(TransactionConsumer.class);
+public class SampleConsumer {
+	Logger LOG = LoggerFactory.getLogger(SampleConsumer.class);
 
 	//TODO: add listener methods here
-	@KafkaListener(topics = "banktrans")
+	@KafkaListener(topics = "sample")
 	void listener(String transaction) {
 		LOG.info(transaction);
 		

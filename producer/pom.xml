@@ -10,9 +10,8 @@
 		<relativePath />
 	</parent>
 	<groupId>th.ac.mfu</groupId>
-	<artifactId>lab-pubsub-producer</artifactId>
+	<artifactId>producer</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>lab-pubsub-producer</name>
 	<description>Service to generate transaction</description>
 	<properties>
 		<java.version>11</java.version>

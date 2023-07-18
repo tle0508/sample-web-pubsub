@@ -18,9 +18,9 @@
 	</properties>
 	
 	<modules>
-		<module>lab-pubsub-producer</module>
-		<module>lab-pubsub-consumer</module>
-		<module>lab-pubsub-eureka-naming-server</module>
+		<module>producer</module>
+		<module>consumer</module>
+		<module>naming-server</module>
 	</modules>
 	
 	<dependencies>

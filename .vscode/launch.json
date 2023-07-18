@@ -6,6 +6,27 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Launch SampleConsumerApplication",
+            "request": "launch",
+            "mainClass": "lab.pubsub.consumer.SampleConsumerApplication",
+            "projectName": "consumer"
+        },
+        {
+            "type": "java",
+            "name": "Launch SampleProducerApplication",
+            "request": "launch",
+            "mainClass": "lab.pubsub.producer.SampleProducerApplication",
+            "projectName": "producer"
+        },
+        {
+            "type": "java",
+            "name": "Launch SpringBootMicroserviceEurekaNamingServerApplication",
+            "request": "launch",
+            "mainClass": "lab.microservice.namingserver.SpringBootMicroserviceEurekaNamingServerApplication",
+            "projectName": "naming-server"
+        },
+        {
+            "type": "java",
             "name": "Launch Current File",
             "request": "launch",
             "mainClass": "${file}"
