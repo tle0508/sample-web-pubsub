@@ -1,0 +1,35 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Launch Current File",
+            "request": "launch",
+            "mainClass": "${file}"
+        },
+        {
+            "type": "java",
+            "name": "Launch TransactionConsumerApplication",
+            "request": "launch",
+            "mainClass": "lab.pubsub.consumer.TransactionConsumerApplication",
+            "projectName": "lab-pubsub-consumer"
+        },
+        {
+            "type": "java",
+            "name": "Launch SpringBootMicroserviceEurekaNamingServerApplication",
+            "request": "launch",
+            "mainClass": "lab.microservice.namingserver.SpringBootMicroserviceEurekaNamingServerApplication",
+            "projectName": "lab-pubsub-eureka-naming-server"
+        },
+        {
+            "type": "java",
+            "name": "Launch TransationProducerApplication",
+            "request": "launch",
+            "mainClass": "lab.pubsub.producer.TransationProducerApplication",
+            "projectName": "lab-pubsub-producer"
+        }
+    ]
+}

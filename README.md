@@ -40,9 +40,8 @@ This step involve settingup Zookeeper and Apache Kafka on your machine. In this 
 
 - Go to the `bin` directory.
 
-- Start ZooKeeper by executing the command `./zkServer.sh start`.
+- Start ZooKeeper by executing the command `zkServer`. or `zkServer.sh start` (on mac os).
 
-- Stop ZooKeeper by stopping the command `./zkServer.sh stop`.
 
 #####Setup Kafka Server
 - Download the latest stable version of Kafka from [here](https://www.apache.org/dyn/closer.cgi?path=/kafka/2.8.0/kafka_2.12-2.8.0.tgz).
@@ -55,20 +54,20 @@ This step involve settingup Zookeeper and Apache Kafka on your machine. In this 
 
 - Check the `zookeeper.connect` property and change it as per your needs. The Kafka broker will connect to this ZooKeeper instance.
 
-- Go to the Kafka home directory and execute the command `./bin/kafka-server-start.sh config/server.properties`.
+- Go to the Kafka home directory and execute the command `.\bin\windows\kafka-server-start.bat` .\config\server.properties (on windows) `./bin/kafka-server-start.sh config/server.properties` (on macos).
 
-- Stop the Kafka broker through the command `./bin/kafka-server-stop.sh`.
 
 We will need to create a topic on kafka to store messages for bank transactions. Please execute the following command to create a topic named `banktrans`.
 
 ```
-./kafka-topics.sh --create --topic banktrans --bootstrap-server localhost:9092
+./kafka-topics.bat --create --topic banktrans --bootstrap-server localhost:9092
 ```
+
 
 You can monitor the Kafka server to see if there is any incoming messages under this topic using the following command.
 
 ```
-./kafka-console-consumer.sh --topic banktrans --from-beginning --bootstrap-server localhost:9092
+./kafka-console-consumer.bat --topic banktrans --from-beginning --bootstrap-server localhost:9092
 ```
 
 #### b) Developing Producer
