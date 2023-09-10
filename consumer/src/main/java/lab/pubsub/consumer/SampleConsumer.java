@@ -11,8 +11,14 @@ public class SampleConsumer {
 
 	//TODO: add listener methods here
 	@KafkaListener(topics = "sample")
-	void listener(String transaction) {
+	void listen(String transaction) {
 		LOG.info(transaction);
+		
+		// process transaction here
+	}
+	@KafkaListener(topics = "greet")
+	void listenGreet(String name) {
+		LOG.info("hello"+name.toUpperCase());
 		
 		// process transaction here
 	}
